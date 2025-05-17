@@ -1,10 +1,25 @@
 import { useRef, useState } from 'react';
 
+type ModalProps = {
+
+  headerLabel: string;
+  children: React.ReactNode;
+  
+};
+
+type TodoItemsProps = {
+
+  key: number;
+  index: number;
+  name: string;
+
+}
+
 function App() {
 
   const [isOpen, setIsOpen] = useState(false);
   const [tasks, setTasks] = useState(["Eat", "Sleep", "Repeat"]);
-  const inputRef = useRef();
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const toggle = () => {
 
@@ -21,7 +36,7 @@ function App() {
           <section>
               <button
               onClick={toggle}
-              class="cursor-pointer whitespace-nowrap px-3 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 active:bg-blue-800 transition duration-150 shadow-sm"
+              className="cursor-pointer whitespace-nowrap px-3 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 active:bg-blue-800 transition duration-150 shadow-sm"
               >Add task</button>
               <h1 className="text-xl font-bold">To do</h1>
               <ul>
@@ -34,7 +49,7 @@ function App() {
       </main>
   );
 
-  function Modal(props) {
+  function Modal(props : ModalProps) {
 
     if(isOpen)
       return (
@@ -53,13 +68,16 @@ function App() {
       return null;
   }
 
-  function AddTaskForm(props){
+  function AddTaskForm(){
 
     const handleAddTask = () => {
-      const value = inputRef.current.value.trim();
-      if (value === "") return;
-      setTasks((prev) => [...prev, value]);
-      inputRef.current.value = ""; 
+      if(inputRef.current){
+        const value = inputRef.current.value.trim();
+        if (value === "") return;
+        setTasks((prev) => [...prev, value]);
+        inputRef.current.value = "";
+        toggle(); 
+      }
     };
 
     return(
@@ -71,7 +89,7 @@ function App() {
               placeholder="New task name"/>
           <button
               onClick={handleAddTask}
-              class="cursor-pointer whitespace-nowrap px-3 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 active:bg-blue-800 transition duration-150 shadow-sm"
+              className="cursor-pointer whitespace-nowrap px-3 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 active:bg-blue-800 transition duration-150 shadow-sm"
           >Add task</button>
       </div>
 
@@ -80,7 +98,7 @@ function App() {
   }
 
   
-  function TodoItems(props){
+  function TodoItems(props: TodoItemsProps){
 
     return(
 
@@ -95,7 +113,7 @@ function App() {
 
   }
 
-  function deleteTask(indexToDelete) {
+  function deleteTask(indexToDelete : number) {
     setTasks(prevTasks => prevTasks.filter((_, index) => index !== indexToDelete));
   }
 }
